@@ -20,7 +20,7 @@ const allowedOrigins = ["http://localhost:5173", "http://localhost:4173"];
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({origin: allowedOrigins, credentials: true}));
+app.use(cors({origin: "https://muobot-client.onrender.com", allowedOrigins, credentials: true}));
 
 // API Endpoints
 app.get('/', (req, res) => res.send("API Working"));
