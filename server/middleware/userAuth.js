@@ -36,18 +36,24 @@ const userAuth = async (req, res, next) => {
     }
 
     try {
+        // Verify the token using the JWT_SECRET from environment variables
         const tokenDecode = jwt.verify(token, process.env.JWT_SECRET);
 
+        // Check if the decoded token contains the user ID
         if (tokenDecode && tokenDecode.id) {
-            req.body.userId = tokenDecode.id; // Store userId in req.body
-            next(); // Proceed to next middleware
+            req.body.userId = tokenDecode.id;  // Assign the user ID to the request object
+            return next();  // Continue to the next middleware or route handler
         } else {
             return res.json({ success: false, message: 'Not Authorized, Login Again' });
         }
-
     } catch (error) {
-        console.error('JWT Error:', error); // Log the error for debugging
-        return res.json({ success: false, message: error.message }); // Return error message to the client
+        console.error('JWT Error:', error);  // Log the error for debugging
+        
+        // Handle specific JWT errors
+        if (error.name === 'TokenExpiredError') {
+            return res.json({ success: false, message: 'Token expired, please log in again' });
+        }
+        return res.json({ success: false, message: 'Authentication failed' });
     }
 };
 
